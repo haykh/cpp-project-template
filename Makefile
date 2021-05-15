@@ -19,14 +19,13 @@ EXT_DIR := extern
 LDFLAGS := $(LDFALGS) -L${LIB_DIR} -lbar
 
 # appending path
+# `__` means absolute path will be used
 __BUILD_DIR := ${ROOT_DIR}${BUILD_DIR}
 __BIN_DIR := ${ROOT_DIR}${BIN_DIR}
 __SRC_DIR := ${ROOT_DIR}${SRC_DIR}
 __TARGET := ${BIN_DIR}/${TARGET}
 # # # # # Settings # # # # # # # # # # # # 
 # 
-DEBUGMODE := y 
-VERBOSE := n
 
 DEFINITIONS := 
 
@@ -44,13 +43,12 @@ endif
 CXX := g++
 LINK := ${CXX}
 CXXSTANDARD := -std=c++17
-ifeq ($(strip ${DEBUGMODE}), n)
-	# linker configuration flags (e.g. optimization level)
-	CONFFLAGS := -O3 -Ofast
-	PREPFLAGS := -DNDEBUG
-else
+ifeq ($(strip ${DEBUGMODE}), y)
 	CONFFLAGS := 
 	PREPFLAGS := -O0 -g -DDEBUG
+else
+	CONFFLAGS := -O3 -Ofast
+	PREPFLAGS := -DNDEBUG
 endif
 
 # warning flags
@@ -76,7 +74,16 @@ ALL_OBJS := $(OBJS)
 
 # # # # # Targets # # # # # # # # # # # # # # 
 # 
-default : all
+default : help
+
+help:
+	@echo "usage: \`make all [OPTIONS]\`"
+	@echo 
+	@echo "options:"
+	@echo "   DEBUGMODE={y|n}      -- enable/disable debug mode [default: n]"
+	@echo "   VERBOSE={y|n}        -- enable/disable verbose compilation mode [default: n]"
+	@echo
+	@echo "cleanup: \`make clean\`"
 
 # linking the main app
 all : ${__TARGET}
