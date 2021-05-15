@@ -7,6 +7,8 @@ BUILD_DIR := build
 BIN_DIR := bin
 
 TARGET := main
+# static libraries 
+LIBRARIES := bar 
 
 SRC_DIR := src
 
@@ -16,7 +18,7 @@ INC_DIR := include
 LIB_DIR := lib
 # for source codes of external libraries (either static or dynamic)
 EXT_DIR := extern
-LDFLAGS := $(LDFALGS) -L${LIB_DIR} -lbar
+LDFLAGS := $(LDFALGS) -L${LIB_DIR} $(addprefix -l, $(LIBRARIES)) 
 
 # appending path
 # `__` means absolute path will be used
@@ -46,8 +48,8 @@ CXX := g++
 LINK := ${CXX}
 CXXSTANDARD := -std=c++17
 ifeq ($(strip ${DEBUGMODE}), y)
-	CONFFLAGS := 
-	PREPFLAGS := -O0 -g -DDEBUG
+	CONFFLAGS := -O0 -g
+	PREPFLAGS := -DDEBUG
 else
 	CONFFLAGS := -O3 -Ofast
 	PREPFLAGS := -DNDEBUG
@@ -59,7 +61,7 @@ WARNFLAGS := -Wall -Wextra -pedantic
 # custom preprocessor flags
 # ... 
 
-CPPFLAGS = $(WARNFLAGS) $(PREPFLAGS) 
+CPPFLAGS := $(WARNFLAGS) $(PREPFLAGS) 
 CXXFLAGS := $(CXXFLAGS) $(CONFFLAGS)
 
 # # # # # File collection # # # # # # # # # # # 
@@ -75,6 +77,8 @@ ALL_OBJS := $(OBJS)
 
 # # # # # Targets # # # # # # # # # # # # # # 
 # 
+.PHONY: all help default clean 
+
 default : help
 
 help:
@@ -104,8 +108,6 @@ $(1): $(2)
 endef
 #$(foreach obj, $(ALL_OBJS), $(eval $(call generateRules, ${obj}, ${ROOT_DIR}$(subst .o,,$(obj)))))
 $(foreach obj, $(ALL_OBJS), $(eval $(call generateRules, ${obj}, $(subst ${BUILD_DIR},${SRC_DIR},$(subst .o,,$(obj))))))
-
-.PHONY: all default clean 
 
 clean:
 	rm -rf ${BUILD_DIR} ${BIN_DIR}
