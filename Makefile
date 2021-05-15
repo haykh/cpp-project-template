@@ -26,6 +26,8 @@ __SRC_DIR := ${ROOT_DIR}${SRC_DIR}
 __TARGET := ${BIN_DIR}/${TARGET}
 # # # # # Settings # # # # # # # # # # # # 
 # 
+VERBOSE ?= n
+DEBUGMODE ?= n
 
 DEFINITIONS := 
 
@@ -62,7 +64,6 @@ CXXFLAGS := $(CXXFLAGS) $(CONFFLAGS)
 
 # # # # # File collection # # # # # # # # # # # 
 # 
-# Main core
 SRCS := $(shell find ${__SRC_DIR} -name *.cpp -or -name *.c)
 OBJS := $(subst ${__SRC_DIR},${__BUILD_DIR},$(SRCS:%=%.o))
 DEPS := $(OBJS:.o=.d)
